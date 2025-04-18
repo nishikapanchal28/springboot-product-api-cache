@@ -46,14 +46,14 @@ mvn test
 # Generate code coverage report
 mvn jacoco:report
 
-# Open coverage report in your browser (for Mac/Linux)
+# Open coverage report in your browser
 open target/site/jacoco/index.html
 
 # Build Docker image
-docker build -t nishikapanchal28/api .
+docker build -t ${{ secrets.DOCKER_USERNAME }}/api:latest .
 
 # Run Docker container
-docker run -p 8080:8080 nishikapanchal28/api
+docker run -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/api:latest
 
 http://localhost:8080/swagger-ui/index.html
 
