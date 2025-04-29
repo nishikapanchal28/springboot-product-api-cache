@@ -11,14 +11,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -30,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ProductController.class)
 @Import(ProductMapperImpl.class)
+@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
 public class ProductControllerTest {
 
     @Autowired
@@ -51,15 +53,16 @@ public class ProductControllerTest {
     @BeforeEach
     void setup() {
         id = UUID.randomUUID();
-        productDTO = new ProductDTO(null, "Phone", "Smartphone", 699.0, true);
-        product = new Product(id, "Phone", "Smartphone", 699.0, true);
+        productDTO = new ProductDTO(null, "IT-Care Phone", "Smartphone", 699.0, true);
+        product = new Product(id, "IT-Care Phone", "Smartphone", 699.0, true);
 
     }
+
     @DisplayName("Create a new product")
     @Test
     void testCreateProduct() throws Exception {
-        ProductDTO savedDto = new ProductDTO(id, "Laptop", "Gaming", 1299.0, true);
-        Product productEntity = new Product(id, "Laptop", "Gaming", 1299.0, true);
+        ProductDTO savedDto = new ProductDTO(id, "IT-Care Laptop", "Gaming Laptop", 1299.0, true);
+        Product productEntity = new Product(id, "IT-Care Laptop", "Gaming Laptop", 1299.0, true);
 
         when(productMapper.productDTOToProduct(any())).thenReturn(productEntity);
         when(productService.createProduct(productEntity)).thenReturn(productEntity);
@@ -67,27 +70,27 @@ public class ProductControllerTest {
 
         mockMvc.perform(post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(product)))
+                        .content(objectMapper.writeValueAsString(productDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Laptop"));
+                .andExpect(jsonPath("$.name").value("IT-Care Laptop"));
     }
 
     @DisplayName("Get the product by id")
     @Test
     void testGetProductById() throws Exception {
         when(productService.getProductById(id)).thenReturn(product);
-        when(productMapper.productToProductDTO(product)).thenReturn(new ProductDTO(id, "Phone", "Smartphone", 699.0, true));
+        when(productMapper.productToProductDTO(product)).thenReturn(new ProductDTO(id, "IT-Care Phone", "Smartphone", 699.0, true));
 
         mockMvc.perform(get("/api/products/" + id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Phone"));
+                .andExpect(jsonPath("$.name").value("IT-Care Phone"));
     }
 
     @DisplayName("List all the products")
     @Test
     void testListAllProducts() throws Exception {
         List<Product> productList = List.of(product);
-        List<ProductDTO> productDTOList = List.of(new ProductDTO(id, "Phone", "Smartphone", 699.0, true));
+        List<ProductDTO> productDTOList = List.of(new ProductDTO(id, "IT-Care Phone", "Smartphone", 699.0, true));
 
         when(productService.getAllProducts()).thenReturn(productList);
         when(productMapper.productToProductDTO(product)).thenReturn(productDTOList.get(0));
@@ -95,7 +98,7 @@ public class ProductControllerTest {
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Phone"));
+                .andExpect(jsonPath("$[0].name").value("IT-Care Phone"));
     }
 
     @DisplayName("Delete a product")
@@ -110,8 +113,8 @@ public class ProductControllerTest {
     @DisplayName("Update the Product")
     @Test
     void testUpdateProduct() throws Exception {
-        ProductDTO updatedDTO = new ProductDTO(id, "Phone", "Smartphone", 799.0, false);
-        Product updatedProduct = new Product(id, "Phone", "Smartphone", 799.0, false);
+        ProductDTO updatedDTO = new ProductDTO(id, "IT-Care Phone", "Smartphone", 799.0, false);
+        Product updatedProduct = new Product(id, "IT-Care Phone", "Smartphone", 799.0, false);
 
         when(productMapper.productDTOToProduct(any())).thenReturn(updatedProduct);
         when(productService.updateProduct(id, updatedProduct)).thenReturn(updatedProduct);
@@ -128,8 +131,8 @@ public class ProductControllerTest {
     @DisplayName("Create a new product with availability false")
     @Test
     void testCreateProductWithAvailabilityFalse() throws Exception {
-        ProductDTO productWithFalseAvailability = new ProductDTO(null, "Tablet", "Android", 499.0, false);
-        Product productEntity = new Product(id, "Tablet", "Android", 499.0, false);
+        ProductDTO productWithFalseAvailability = new ProductDTO(null, "IT-Care Tablet", "Android", 499.0, false);
+        Product productEntity = new Product(id, "IT-Care Tablet", "Android", 499.0, false);
 
         when(productMapper.productDTOToProduct(any())).thenReturn(productEntity);
         when(productService.createProduct(productEntity)).thenReturn(productEntity);

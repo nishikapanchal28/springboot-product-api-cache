@@ -1,7 +1,8 @@
 package com.product.api.service;
 
-import com.product.api.exception.ProductNotFoundException;
+import com.product.api.exception.ProductValidationException;
 import com.product.api.model.Product;
+import com.product.api.validator.ProductValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,6 +14,7 @@ public class ProductService {
 
     public Product createProduct(Product product) {
         UUID id = UUID.randomUUID();
+        ProductValidator.validate(product);
         product.setId(id);
         productMap.put(id, product);
         return product;
@@ -20,7 +22,7 @@ public class ProductService {
 
     public Product getProductById(UUID id) {
         return Optional.ofNullable(productMap.get(id))
-                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
+                .orElseThrow(() -> new ProductValidationException("Product with ID " + id + " not found"));
     }
 
     public List<Product> getAllProducts() {
@@ -29,8 +31,9 @@ public class ProductService {
 
     public Product updateProduct(UUID id, Product updatedProduct) {
         if (!productMap.containsKey(id)) {
-            throw new ProductNotFoundException("Product with ID " + id + " not found");
+            throw new ProductValidationException("Product with ID " + id + " not found");
         }
+        ProductValidator.validate(updatedProduct);
         updatedProduct.setId(id);
         productMap.put(id, updatedProduct);
         return updatedProduct;
@@ -38,7 +41,7 @@ public class ProductService {
 
     public void deleteProduct(UUID id) {
         if (!productMap.containsKey(id)) {
-            throw new ProductNotFoundException("Product with ID " + id + " not found");
+            throw new ProductValidationException("Product with ID " + id + " not found");
         }
         productMap.remove(id);
     }

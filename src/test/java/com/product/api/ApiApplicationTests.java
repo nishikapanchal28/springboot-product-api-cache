@@ -40,7 +40,7 @@ class ApiApplicationTests {
 	void testProductDTOToProduct() {
 		ProductDTO productDTO = new ProductDTO();
 		productDTO.setId(UUID.randomUUID());
-		productDTO.setName("Test Product");
+		productDTO.setName("IT-Care Test Product");
 		productDTO.setDescription("Description of test product");
 		productDTO.setPrice(19.99);
 		productDTO.setAvailable(true);

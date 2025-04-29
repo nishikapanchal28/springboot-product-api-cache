@@ -1,6 +1,6 @@
 package com.product.api;
 
-import com.product.api.exception.ProductNotFoundException;
+import com.product.api.exception.ProductValidationException;
 import com.product.api.model.Product;
 import com.product.api.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,24 +22,24 @@ public class ProductServiceTest {
     @DisplayName("Create and get the products")
     @Test
     void testCreateAndGetProduct() {
-        Product product = new Product(null, "Phone", "Smartphone", 699.99, true);
+        Product product = new Product(null, "IT-Care Phone", "Smartphone", 699.99, true);
         Product created = productService.createProduct(product);
 
         Product fetched = productService.getProductById(created.getId());
 
-        assertEquals("Phone", fetched.getName());
+        assertEquals("IT-Care Phone", fetched.getName());
         assertTrue(fetched.getAvailable());
     }
     @DisplayName("Show the product is not found")
     @Test
     void testGetProductNotFound() {
         UUID id = UUID.randomUUID();
-        assertThrows(ProductNotFoundException.class, () -> productService.getProductById(id));
+        assertThrows(ProductValidationException.class, () -> productService.getProductById(id));
     }
     @DisplayName("Update the product")
     @Test
     void testUpdateProduct() {
-        Product product = productService.createProduct(new Product(null, "TV", "4K TV", 999.0, true));
+        Product product = productService.createProduct(new Product(null, "IT-Care TV", "4K Smart TV ", 999.0, true));
         product.setPrice(899.0);
 
         Product updated = productService.updateProduct(product.getId(), product);
@@ -49,17 +49,17 @@ public class ProductServiceTest {
     @DisplayName("Delete a product")
     @Test
     void testDeleteProduct() {
-        Product product = productService.createProduct(new Product(null, "Tablet", "Android", 299.0, true));
+        Product product = productService.createProduct(new Product(null, "IT-Care Tablet", "Android Tablet", 299.0, true));
         productService.deleteProduct(product.getId());
 
-        assertThrows(ProductNotFoundException.class, () -> productService.getProductById(product.getId()));
+        assertThrows(ProductValidationException.class, () -> productService.getProductById(product.getId()));
     }
 
     @DisplayName("Get all the products")
     @Test
     void testGetAllProducts() {
-        productService.createProduct(new Product(null, "Item1", "Desc", 100.0, true));
-        productService.createProduct(new Product(null, "Item2", "Desc", 200.0, true));
+        productService.createProduct(new Product(null, "IT-Care Item1", "Description of Item 1", 100.0, true));
+        productService.createProduct(new Product(null, "IT-Care Item2", "Description of Item 1", 200.0, true));
 
         List<Product> products = productService.getAllProducts();
 

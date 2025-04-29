@@ -13,8 +13,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Object> handleProductNotFound(ProductNotFoundException ex) {
+    @ExceptionHandler(ProductValidationException.class)
+    public ResponseEntity<Object> handleProductNotFound(ProductValidationException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND));
     }
 
